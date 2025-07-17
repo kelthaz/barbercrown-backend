@@ -1,0 +1,15 @@
+// src/app.module.ts
+import { Module } from '@nestjs/common';
+import { DatabaseModule } from './database/database.module';
+import { UsersModule } from './users/users.module';
+import { AppointmentsModule } from './appoitments/appointment.module';
+// Aquí agregarás más módulos luego
+
+@Module({
+  imports: [
+    DatabaseModule,
+    UsersModule,
+    AppointmentsModule
+  ],
+})
+export class AppModule {}

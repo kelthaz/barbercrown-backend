@@ -1,12 +1,20 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Appointment } from '../appoitments/appointment.entity';
+import { Role } from '../roles/role.entity';
 
-@Entity()
+@Entity('users')
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
-  
+
   @Column()
   @ApiProperty({ example: 'Juan Pérez' })
   name: string;
@@ -17,10 +25,13 @@ export class User {
   @Column()
   password: string;
 
+  @Column()
+  phone: string;
+
+  @ManyToOne(() => Role, (role) => role.users, { eager: true, nullable: true })
+  @JoinColumn({ name: 'rol_id' })
+  rol?: Role;
+
   @OneToMany(() => Appointment, (appointment) => appointment.user)
   appointments: Appointment[];
-
-  // Puedes agregar más campos como:
-  // @Column() phone: string;
-  // @Column() role: string;
 }

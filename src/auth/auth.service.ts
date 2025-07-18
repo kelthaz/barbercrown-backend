@@ -31,7 +31,7 @@ export class AuthService {
   const isPasswordValid = await bcrypt.compare(password, user.password[0]);
 
   if (!isPasswordValid) {
-    throw new UnauthorizedException('Correo o contraseña incorrectos');
+    throw new UnauthorizedException('Correo o contraseña incorrectos.');
   }
 
   const { password: _, ...result } = user;

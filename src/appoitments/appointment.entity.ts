@@ -3,6 +3,7 @@ import {
   Column,
   PrimaryGeneratedColumn,
   ManyToOne,
+  JoinColumn,
   CreateDateColumn,
 } from 'typeorm';
 import { User } from '../users/users.entity';
@@ -25,7 +26,11 @@ export class Appointment {
   status: string;
 
   @ManyToOne(() => User, (user) => user.appointments)
+  @JoinColumn({ name: 'userId' })
   user: User;
+
+  @Column()
+  userId: number;
 
   @CreateDateColumn()
   createdAt: Date;

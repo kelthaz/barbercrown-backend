@@ -24,6 +24,5 @@ export class CreateUserDto {
 
   @ApiProperty({ example: '1', description: 'Rol_id del usuario' })
   @IsNumber()
-  @MinLength(10)
   rol_id: number;
 }

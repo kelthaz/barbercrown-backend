@@ -1,20 +1,54 @@
-// src/appointments/appointments.service.ts
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Appointment } from './appointment.entity';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
+import { User } from '../users/users.entity';
 
 @Injectable()
 export class AppointmentsService {
   constructor(
     @InjectRepository(Appointment)
     private appointmentRepo: Repository<Appointment>,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
   ) {}
 
-  create(data: CreateAppointmentDto) {
-    const appointment = this.appointmentRepo.create(data);
-    return this.appointmentRepo.save(appointment);
+  async create(data: CreateAppointmentDto) {
+    try {
+      const user = await this.userRepository.findOneBy({ id: data.userId });
+
+      if (!user) {
+        throw new NotFoundException('Usuario no encontrado');
+      }
+
+      const appointment = this.appointmentRepo.create({
+        date: data.date,
+        service: data.service,
+        barberName: data.barberName,
+        status: data.status,
+        user: user,
+      });
+
+      await this.appointmentRepo.save(appointment);
+
+      return this.appointmentRepo.findOne({
+        where: { id: appointment.id },
+        relations: ['user'],
+      });
+    } catch (error) {
+      console.error('Error al crear la cita:', error);
+
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+
+      throw new InternalServerErrorException('Error interno al crear la cita');
+    }
   }
 
   findAll() {

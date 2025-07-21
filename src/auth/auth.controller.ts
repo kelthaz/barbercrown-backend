@@ -10,6 +10,7 @@ import { AuthService } from './auth.service';
 import { Auth } from './auth.entity';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { LoginAuthDto } from './dto/login.dto';
+import { CreateUserDto } from '../users/dto/create-user.dto';
 
 @ApiTags('Autenticación')
 @Controller('auth')
@@ -49,7 +50,7 @@ export class AuthController {
   @ApiOperation({ summary: 'Registrar un usuario nuevo.' })
   @ApiResponse({ status: 201, description: 'Registro creado con exitoso.' })
   @Post('register')
-  async register(@Body() userData: Partial<Auth>) {
-    return this.authService.register(userData);
+  async register(@Body() createUserDto: CreateUserDto) {
+    return this.authService.registerUser(createUserDto);
   }
 }

@@ -8,6 +8,7 @@ import { Repository } from 'typeorm';
 import { Appointment } from './appointment.entity';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { User } from '../users/users.entity';
+import { UpdateAppointmentDto } from './dto/update-appointment.dto';
 
 @Injectable()
 export class AppointmentsService {
@@ -59,8 +60,24 @@ export class AppointmentsService {
     return this.appointmentRepo.findOne({ where: { id }, relations: ['user'] });
   }
 
-  async update(id: number, data: Partial<Appointment>) {
-    await this.appointmentRepo.update(id, data);
+  async update(id: number, data: UpdateAppointmentDto) {
+    const user = await this.userRepository.findOneBy({ id: data.userId });
+
+    if (!user) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
+
+    const appointment = await this.appointmentRepo.findOne({ where: { id } });
+    if (!appointment) {
+      throw new NotFoundException(`La cita con ID ${id} no existe`);
+    }
+
+    const updatedData: Partial<Appointment> = {
+      ...data,
+      date: data.date ? new Date(data.date) : undefined,
+    };
+
+    await this.appointmentRepo.update(id, updatedData);
     return this.findOne(id);
   }
 

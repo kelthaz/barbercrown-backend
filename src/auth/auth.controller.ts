@@ -31,7 +31,7 @@ export class AuthController {
       if (!user) {
         throw new UnauthorizedException('Credenciales inválidas');
       }
-
+      console.log('Usuario logueado con exito:', user.name);
       return this.authService.login(user);
     } catch (error) {
       console.error('Login error:', error);

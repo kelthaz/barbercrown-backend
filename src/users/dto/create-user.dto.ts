@@ -25,4 +25,8 @@ export class CreateUserDto {
   @ApiProperty({ example: '1', description: 'Rol_id del usuario' })
   @IsNumber()
   rol_id: number;
+
+  @ApiProperty({ example: '1', description: 'Estado del usuario.' })
+  @IsNumber()
+  estado: number;
 }

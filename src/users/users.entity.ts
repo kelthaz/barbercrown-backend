@@ -28,6 +28,9 @@ export class User {
   @Column()
   phone: string;
 
+  @Column()
+  estado: number;
+
   @ManyToOne(() => Role, (role) => role.users, { eager: true, nullable: true })
   @JoinColumn({ name: 'rol_id' })
   rol?: Role;

@@ -45,6 +45,8 @@ export class UsersController {
       rol: role,
     });
 
+
+    console.log('Nuevo usuario:', newUser);
     return this.userRepository.save(newUser);
   }
 

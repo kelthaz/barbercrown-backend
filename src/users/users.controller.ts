@@ -6,7 +6,7 @@ import { NotFoundException, BadRequestException } from '@nestjs/common';
 import { User } from './users.entity';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
-import { Role } from '../roles/role.entity';
+import { Role } from '../roles/roles.entity';
 import * as bcrypt from 'bcrypt';
 
 @ApiTags('Usuarios')

@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Appointment } from '../appoitments/appointment.entity';
-import { Role } from '../roles/role.entity';
+import { Role } from '../roles/roles.entity';
 
 @Entity('users')
 export class User {

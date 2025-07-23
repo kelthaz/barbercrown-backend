@@ -3,28 +3,59 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './users.entity';
 import * as bcrypt from 'bcrypt';
+import { CreateUserDto } from './dto/create-user.dto';
+import {
+  NotFoundException,
+  BadRequestException,
+  InternalServerErrorException,
+} from '@nestjs/common';
+import { Role } from '../roles/roles.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+
+    @InjectRepository(Role)
+    private readonly roleRepository: Repository<Role>,
   ) {}
 
-  async create(userData: Partial<User>): Promise<User> {
-    if (!userData.password) {
-      throw new Error('Password is required');
+  async create(createUserDto: CreateUserDto): Promise<User> {
+    try {
+      const { rol_id, password, ...userData } = createUserDto;
+
+      if (!password) {
+        throw new BadRequestException('La contraseña es requerida');
+      }
+
+      const role = await this.roleRepository.findOne({ where: { id: rol_id } });
+
+      if (!role) {
+        throw new NotFoundException(`El rol con ID ${rol_id} no existe`);
+      }
+
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      const user = this.userRepository.create({
+        ...userData,
+        password: hashedPassword,
+        rol: role,
+      });
+      console.log('Usuario creado con exito:', user.name);
+      return await this.userRepository.save(user);
+    } catch (error) {
+      console.error('Error creando usuario:', error);
+      if (
+        error instanceof BadRequestException ||
+        error instanceof NotFoundException
+      ) {
+        throw error;
+      }
+      throw new InternalServerErrorException(
+        'Ocurrió un error al crear el usuario',
+      );
     }
-
-    const saltOrRounds = 10;
-    const hashedPassword = await bcrypt.hash(userData.password, saltOrRounds);
-
-    const user = this.userRepository.create({
-      ...userData,
-      password: hashedPassword,
-    });
-
-    return await this.userRepository.save(user);
   }
 
   async findAll(): Promise<User[]> {

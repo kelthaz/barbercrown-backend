@@ -31,14 +31,13 @@ export class UsersService {
     return await this.userRepository.find();
   }
 
-async findByEmail(email: string): Promise<User | null> {
-  return this.userRepository.findOne({
-    where: { email },
-    select: ['id', 'email', 'password', 'name', 'phone'], // 👈 agrega password aquí
-    relations: ['rol'],
-  });
-}
-
+  async findByEmail(email: string): Promise<User | null> {
+    return this.userRepository.findOne({
+      where: { email },
+      select: ['id', 'email', 'password', 'name', 'phone'], // 👈 agrega password aquí
+      relations: ['rol'],
+    });
+  }
 
   //   async findOne(id: number): Promise<User> {
   //     return await this.userRepository.findOneBy({ id });

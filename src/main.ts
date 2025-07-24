@@ -2,16 +2,16 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { JwtExpiredFilter } from './common/filters/jwt-expired.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-
-  // 🔧 Agrega esta línea para habilitar validaciones en DTOs
+  app.useGlobalFilters(new JwtExpiredFilter());
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true, // elimina campos no definidos en el DTO
-      forbidNonWhitelisted: true, // lanza error si hay campos desconocidos
-      transform: true, // transforma los payloads a instancias de DTOs
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
     }),
   );
 

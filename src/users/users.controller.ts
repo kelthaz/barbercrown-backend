@@ -34,6 +34,14 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
+  // @UseGuards(AuthGuard('jwt'))
+  @ApiOperation({ summary: 'Obtener todos los barberos.' })
+  @ApiResponse({ status: 200, description: 'Lista de barberos.' })
+  @Get('barbers')
+  getActiveBarbers() {
+    return this.usersService.getActiveBarbers();
+  }
+
   //   @Get(':id')
   //   findOne(@Param('id') id: string) {
   //     return this.usersService.findOne(+id);

@@ -82,4 +82,16 @@ export class UsersService {
   async remove(id: number): Promise<void> {
     await this.userRepository.delete(id);
   }
+
+  async getActiveBarbers(): Promise<User[]> {
+    return this.userRepository.find({
+      where: {
+        estado: 1,
+        rol: {
+          name: 'Barbero',
+        },
+      },
+      relations: ['rol'],
+    });
+  }
 }

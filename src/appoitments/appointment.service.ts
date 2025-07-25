@@ -2,7 +2,6 @@ import {
   Injectable,
   NotFoundException,
   InternalServerErrorException,
-  ConflictException
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Between } from 'typeorm';
@@ -90,6 +89,7 @@ export class AppointmentsService {
 
   async getAvailableSlots(barberName: string, date: string) {
     const WORKING_HOURS = [
+      '08:00',
       '09:00',
       '10:00',
       '11:00',
@@ -99,9 +99,14 @@ export class AppointmentsService {
       '15:00',
       '16:00',
       '17:00',
+      '18:00',
+      '19:00',
+      '20:00',
+      '21:00',
+      '22:00',
     ];
-
-    const parsedDate = new Date(date.replace(' ', 'T'));
+    const [year, month, day] = date.split('-').map(Number);
+    const parsedDate = new Date(year, month - 1, day);
     if (isNaN(parsedDate.getTime())) {
       throw new Error('Fecha inválida recibida');
     }

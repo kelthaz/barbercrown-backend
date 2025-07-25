@@ -2,8 +2,10 @@ import {
   Injectable,
   NotFoundException,
   InternalServerErrorException,
+  ConflictException
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Between } from 'typeorm';
 import { Repository } from 'typeorm';
 import { Appointment } from './appointment.entity';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
@@ -33,6 +35,7 @@ export class AppointmentsService {
         barberName: data.barberName,
         status: data.status,
         user: user,
+        time: data.time,
       });
 
       await this.appointmentRepo.save(appointment);
@@ -83,5 +86,46 @@ export class AppointmentsService {
 
   delete(id: number) {
     return this.appointmentRepo.delete(id);
+  }
+
+  async getAvailableSlots(barberName: string, date: string) {
+    const WORKING_HOURS = [
+      '09:00',
+      '10:00',
+      '11:00',
+      '12:00',
+      '13:00',
+      '14:00',
+      '15:00',
+      '16:00',
+      '17:00',
+    ];
+
+    const parsedDate = new Date(date.replace(' ', 'T'));
+    if (isNaN(parsedDate.getTime())) {
+      throw new Error('Fecha inválida recibida');
+    }
+
+    const startOfDay = new Date(parsedDate);
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const endOfDay = new Date(parsedDate);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const appointments = await this.appointmentRepo.find({
+      where: {
+        barberName,
+        date: Between(startOfDay, endOfDay),
+        status: 'active',
+      },
+    });
+
+    const bookedTimes = appointments.map((appt) => appt.time);
+
+    const availableTimes = WORKING_HOURS.filter(
+      (hour) => !bookedTimes.includes(hour),
+    );
+
+    return availableTimes;
   }
 }

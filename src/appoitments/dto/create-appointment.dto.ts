@@ -31,6 +31,13 @@ export class CreateAppointmentDto {
   status: string;
 
   @ApiProperty({
+    example: '11:00',
+    description: 'Hora de agendamiento de la cita.',
+  })
+  @IsString()
+  time: string;
+
+  @ApiProperty({
     example: 1,
     description: 'ID del usuario que solicita la cita.',
   })

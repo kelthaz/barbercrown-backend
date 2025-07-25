@@ -22,7 +22,7 @@ export class Appointment {
   @Column()
   barberName: string;
 
-  @Column()
+  @Column({ type: 'varchar', length: 100, nullable: true })
   time: string;
 
   @Column({ default: 'pending' })

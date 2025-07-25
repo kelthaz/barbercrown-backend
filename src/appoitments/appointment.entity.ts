@@ -35,6 +35,6 @@ export class Appointment {
   @Column()
   userId: number;
 
-  @CreateDateColumn()
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 }

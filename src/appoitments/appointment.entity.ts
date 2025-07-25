@@ -13,7 +13,7 @@ export class Appointment {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ type: 'timestamp' })
   date: Date;
 
   @Column()
@@ -21,6 +21,9 @@ export class Appointment {
 
   @Column()
   barberName: string;
+
+  @Column()
+  time: string;
 
   @Column({ default: 'pending' })
   status: string;

@@ -8,17 +8,22 @@ import {
   Delete,
   Put,
   ParseIntPipe,
+  Query,
+  BadRequestException,
 } from '@nestjs/common';
 import { AppointmentsService } from './appointment.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';
+import { UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('Citas')
 @Controller('appointments')
 export class AppointmentsController {
   constructor(private readonly appointmentsService: AppointmentsService) {}
 
+  // @UseGuards(AuthGuard('jwt'))
   @ApiOperation({ summary: 'Crear una cita.' })
   @ApiResponse({ status: 201, description: 'Cita creada correctamente.' })
   @Post()
@@ -26,6 +31,7 @@ export class AppointmentsController {
     return this.appointmentsService.create(data);
   }
 
+  // @UseGuards(AuthGuard('jwt'))
   @ApiOperation({ summary: 'Obtener todas las citas creadas.' })
   @ApiResponse({ status: 201, description: 'Citas obtenidas correctamente.' })
   @Get()
@@ -53,5 +59,19 @@ export class AppointmentsController {
   @Delete(':id')
   remove(@Param('id') id: number) {
     return this.appointmentsService.delete(id);
+  }
+
+  // @UseGuards(AuthGuard('jwt'))
+  @ApiOperation({ summary: 'horarios disponibles.' })
+  @ApiResponse({
+    status: 201,
+    description: 'lista de horarios disponibles por barbero.',
+  })
+  @Post('available/:barberName/:date')
+  async getAvailableSlots(
+    @Param('barberName') barberName: string,
+    @Param('date') date: string,
+  ) {
+    return this.appointmentsService.getAvailableSlots(barberName, date);
   }
 }

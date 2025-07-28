@@ -20,6 +20,9 @@ export class Appointment {
   service: string;
 
   @Column()
+  client: string;
+
+  @Column()
   barberName: string;
 
   @Column({ type: 'varchar', length: 100, nullable: true })

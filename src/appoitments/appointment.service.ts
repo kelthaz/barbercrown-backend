@@ -35,6 +35,7 @@ export class AppointmentsService {
         status: data.status,
         user: user,
         time: data.time,
+        client: data.client,
       });
 
       await this.appointmentRepo.save(appointment);

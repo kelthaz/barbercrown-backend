@@ -121,8 +121,7 @@ export class AppointmentsService {
     const appointments = await this.appointmentRepo.find({
       where: {
         barberName,
-        date: Between(startOfDay, endOfDay),
-        status: 'active',
+        date: Between(startOfDay, endOfDay)
       },
     });
 

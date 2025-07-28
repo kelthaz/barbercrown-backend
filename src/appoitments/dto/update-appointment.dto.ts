@@ -1,7 +1,6 @@
 // src/appointments/dto/update-appointment.dto.ts
 import { IsOptional, IsDateString, IsString, IsInt } from 'class-validator';
-import { ApiPropertyOptional } from '@nestjs/swagger';
-
+import { ApiPropertyOptional, ApiProperty } from '@nestjs/swagger';
 export class UpdateAppointmentDto {
   @ApiPropertyOptional({
     example: '2025-07-21T00:00:00.000Z',
@@ -34,6 +33,20 @@ export class UpdateAppointmentDto {
   @IsOptional()
   @IsString()
   status?: string;
+
+  @ApiProperty({
+    example: 'Juan',
+    description: 'Cliente para la cita.',
+  })
+  @IsString()
+  client: string;
+
+  @ApiProperty({
+    example: '11:00',
+    description: 'Hora de agendamiento de la cita.',
+  })
+  @IsString()
+  time: string;
 
   @ApiPropertyOptional({
     example: 1,

@@ -64,24 +64,31 @@ export class AppointmentsService {
   }
 
   async update(id: number, data: UpdateAppointmentDto) {
-    const user = await this.userRepository.findOneBy({ id: data.userId });
+    try {
+      const user = await this.userRepository.findOneBy({ id: data.userId });
 
-    if (!user) {
-      throw new NotFoundException('Usuario no encontrado');
+      if (!user) {
+        throw new NotFoundException('Usuario no encontrado');
+      }
+
+      const appointment = await this.appointmentRepo.findOne({ where: { id } });
+      if (!appointment) {
+        throw new NotFoundException(`La cita con ID ${id} no existe`);
+      }
+
+      const updatedData: Partial<Appointment> = {
+        ...data,
+        date: data.date ? new Date(data.date) : undefined,
+      };
+
+      await this.appointmentRepo.update(id, updatedData);
+      return this.findOne(id);
+    } catch (error) {
+      console.log(error);
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
     }
-
-    const appointment = await this.appointmentRepo.findOne({ where: { id } });
-    if (!appointment) {
-      throw new NotFoundException(`La cita con ID ${id} no existe`);
-    }
-
-    const updatedData: Partial<Appointment> = {
-      ...data,
-      date: data.date ? new Date(data.date) : undefined,
-    };
-
-    await this.appointmentRepo.update(id, updatedData);
-    return this.findOne(id);
   }
 
   delete(id: number) {
@@ -121,7 +128,7 @@ export class AppointmentsService {
     const appointments = await this.appointmentRepo.find({
       where: {
         barberName,
-        date: Between(startOfDay, endOfDay)
+        date: Between(startOfDay, endOfDay),
       },
     });
 

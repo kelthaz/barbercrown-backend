@@ -91,8 +91,19 @@ export class AppointmentsService {
     }
   }
 
-  delete(id: number) {
-    return this.appointmentRepo.delete(id);
+  async delete(id: number) {
+    const appointment = await this.appointmentRepo.findOne({ where: { id } });
+
+    if (!appointment) {
+      throw new NotFoundException(`La cita con ID ${id} no existe`);
+    }
+
+    appointment.status = 'cancelada';
+    await this.appointmentRepo.save(appointment);
+    return {
+      message: `La cita con ID ${id} fue cancelada correctamente.`,
+      appointment,
+    };
   }
 
   async getAvailableSlots(barberName: string, date: string) {

@@ -10,6 +10,7 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { Role } from '../roles/roles.entity';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -70,14 +71,36 @@ export class UsersService {
     });
   }
 
-  //   async findOne(id: number): Promise<User> {
-  //     return await this.userRepository.findOneBy({ id });
-  //   }
+  findOne(id: number) {
+    return this.userRepository.findOne({ where: { id } });
+  }
 
-  //   async update(id: number, userData: Partial<User>): Promise<User> {
-  //     await this.userRepository.update(id, userData);
-  //     return this.findOne(id);
-  //   }
+  async update(id: number, data: UpdateUserDto) {
+    try {
+      const { password, ...userData } = data;
+      const user = await this.userRepository.findOneBy({ id });
+
+      if (!user) {
+        throw new NotFoundException('Usuario no encontrado');
+      }
+
+      Object.assign(user, userData);
+
+      if (password) {
+        user.password = await bcrypt.hash(password, 10);
+      }
+
+      return await this.userRepository.save(user);
+    } catch (error) {
+      console.log(error);
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new InternalServerErrorException(
+        'Ocurrió un error al actualizar el usuario',
+      );
+    }
+  }
 
   async remove(id: number): Promise<void> {
     await this.userRepository.delete(id);

@@ -5,13 +5,16 @@ import {
   Body,
   Param,
   Delete,
+  Put,
   UseGuards,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './users.entity';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @ApiTags('Usuarios')
 @Controller('users')
@@ -47,10 +50,12 @@ export class UsersController {
   //     return this.usersService.findOne(+id);
   //   }
 
-  //   @Put(':id')
-  //   update(@Param('id') id: string, @Body() userData: Partial<User>) {
-  //     return this.usersService.update(+id, userData);
-  //   }
+  @ApiOperation({ summary: 'Actualizar un usuario.' })
+  @ApiResponse({ status: 201, description: 'Usuario actualizado correctamente.' })
+  @Put(':id')
+  update(@Param('id', ParseIntPipe) id: number, @Body() data: UpdateUserDto) {
+    return this.usersService.update(id, data);
+  }
 
   @Delete(':id')
   remove(@Param('id') id: string) {

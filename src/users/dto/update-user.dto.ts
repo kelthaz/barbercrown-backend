@@ -1,16 +1,31 @@
-import { IsString, IsEmail, MinLength, IsNumber} from 'class-validator';
+import {
+  IsString,
+  IsEmail,
+  MinLength,
+  IsNumber,
+  IsObject,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateUserDto {
-  @ApiProperty({ example: 'Juan Pérez', description: 'Nombre completo del usuario' })
+  @ApiProperty({
+    example: 'Juan Pérez',
+    description: 'Nombre completo del usuario',
+  })
   @IsString()
   name: string;
 
-  @ApiProperty({ example: 'juan@example.com', description: 'Correo electrónico del usuario' })
+  @ApiProperty({
+    example: 'juan@example.com',
+    description: 'Correo electrónico del usuario',
+  })
   @IsEmail()
   email: string;
 
-  @ApiProperty({ example: 'strongPassword123', description: 'Contraseña del usuario' })
+  @ApiProperty({
+    example: 'strongPassword123',
+    description: 'Contraseña del usuario',
+  })
   @IsString()
   @MinLength(6)
   password: string;
@@ -23,4 +38,12 @@ export class UpdateUserDto {
   @ApiProperty({ example: '1', description: 'Estado del usuario.' })
   @IsNumber()
   estado: number;
+
+  @ApiProperty({ example: '1', description: 'Rol_id del usuario' })
+  @IsNumber()
+  rol_id: number;
+
+  @ApiProperty({ example: '1', description: 'Rol_id del usuario' })
+  @IsObject()
+  rol: object;
 }

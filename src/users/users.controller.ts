@@ -45,18 +45,21 @@ export class UsersController {
     return this.usersService.getActiveBarbers();
   }
 
-  //   @Get(':id')
-  //   findOne(@Param('id') id: string) {
-  //     return this.usersService.findOne(+id);
-  //   }
-
   @ApiOperation({ summary: 'Actualizar un usuario.' })
-  @ApiResponse({ status: 201, description: 'Usuario actualizado correctamente.' })
+  @ApiResponse({
+    status: 201,
+    description: 'Usuario actualizado correctamente.',
+  })
   @Put(':id')
   update(@Param('id', ParseIntPipe) id: number, @Body() data: UpdateUserDto) {
     return this.usersService.update(id, data);
   }
 
+  @ApiOperation({ summary: 'Eliminar un usuario.' })
+  @ApiResponse({
+    status: 201,
+    description: 'Usuario eliminado correctamente.',
+  })
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usersService.remove(+id);

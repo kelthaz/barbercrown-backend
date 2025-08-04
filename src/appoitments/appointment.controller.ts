@@ -56,6 +56,8 @@ export class AppointmentsController {
     return this.appointmentsService.update(id, data);
   }
 
+  @ApiOperation({ summary: 'Cancelar cita.' })
+  @ApiResponse({ status: 201, description: 'Cita cancelada correctamente.' })
   @Delete(':id')
   remove(@Param('id') id: number) {
     return this.appointmentsService.delete(id);
